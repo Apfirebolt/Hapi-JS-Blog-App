@@ -1,3 +1,4 @@
+const Path = require('path');
 const BaseModel = require('./BaseModel');
 
 class BlogPostModel extends BaseModel {

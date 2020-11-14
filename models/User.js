@@ -1,3 +1,4 @@
+const Path = require('path');
 const Bcrypt = require('bcrypt');
 const BaseModel = require('./BaseModel');
 

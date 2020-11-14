@@ -1,4 +1,5 @@
 const BaseModel = require('./BaseModel');
+const Path = require('path');
 
 class BlogCategoryModel extends BaseModel {
   static get tableName() {
@@ -7,7 +8,7 @@ class BlogCategoryModel extends BaseModel {
 
   static get relationMappings() {
     return {
-      related_posts: {
+      posts: {
         relation: BaseModel.HasManyRelation,
         modelClass: Path.join(__dirname, 'BlogPost'),
         join: {
