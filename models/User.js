@@ -14,6 +14,19 @@ class UserModel extends BaseModel {
     };
   }
 
+  static get relationMappings() {
+    return {
+      blog_categories: {
+        relation: BaseModel.HasManyRelation,
+        modelClass: Path.join(__dirname, 'BlogCategory'),
+        join: {
+          from: 'users.id',
+          to: 'blog_category.created_by',
+        },
+      },
+    };
+  }
+
   async $beforeInsert(queryContext) {
     await super.$beforeInsert(queryContext);
     this.password = await Bcrypt.hash(this.password, 8);
