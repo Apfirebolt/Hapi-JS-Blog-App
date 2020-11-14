@@ -2,15 +2,17 @@ const Joi = require('@hapi/joi');
 const Boom = require('@hapi/boom');
 const UserModel = require('../../models/User');
 
+
 module.exports = {
-  method: 'DELETE',
-  path: '/{userId}/category/{categoryId}/posts/{postId}',
+  method: 'GET',
+  path: '/{userId}/category/{categoryId}/posts/{postId}/all_comments',
   options: {
-    tags: ['api', 'Delete Blog Post'],
+    tags: ['api', 'Create Post Comment'],
     validate: {
       params: Joi.object().keys({
         userId: Joi.number().required().label('User ID'),
         categoryId: Joi.number().required().label('Category ID'),
+        postId: Joi.number().required().label('Post ID'),
       }),
     },
     handler: async (request) => {
@@ -26,15 +28,13 @@ module.exports = {
           return Boom.conflict('Blog category was not found.');
         }
         else {
-            const blogPostData = await fetchedBlog.$relatedQuery('posts').where({
+            const blogPost = await fetchedBlog.$relatedQuery('posts').where({
                 id: request.params.postId
             })
-            .first()
-            .delete();
-            if(blogPostData) {
-                return {
-                    message: 'Blog post was successfully deleted.'
-                };
+            .first();
+            if(blogPost) {
+                const allComments = await blogPost.$relatedQuery('post_comments');
+                return allComments;
             }
             else {
                 return Boom.notFound('Blog post was not found.');

@@ -1,16 +1,19 @@
 const Joi = require('@hapi/joi');
 const Boom = require('@hapi/boom');
 const UserModel = require('../../models/User');
+const { JoinEagerAlgorithm } = require('../../models/User');
 
 module.exports = {
   method: 'DELETE',
-  path: '/{userId}/category/{categoryId}/posts/{postId}',
+  path: '/{userId}/category/{categoryId}/posts/{postId}/comment/{commentId}',
   options: {
-    tags: ['api', 'Delete Blog Post'],
+    tags: ['api', 'Delete Post Comment'],
     validate: {
       params: Joi.object().keys({
         userId: Joi.number().required().label('User ID'),
         categoryId: Joi.number().required().label('Category ID'),
+        postId: Joi.number().required().label('Post ID'),
+        commentId: Joi.number().required().label('Comment ID'),
       }),
     },
     handler: async (request) => {
@@ -26,18 +29,21 @@ module.exports = {
           return Boom.conflict('Blog category was not found.');
         }
         else {
-            const blogPostData = await fetchedBlog.$relatedQuery('posts').where({
+            const blogPost = await fetchedBlog.$relatedQuery('posts').where({
                 id: request.params.postId
             })
-            .first()
-            .delete();
-            if(blogPostData) {
-                return {
-                    message: 'Blog post was successfully deleted.'
-                };
+            .first();
+            if(blogPost) {
+                const deletedComment = await blogPost.$relatedQuery('post_comments')
+                    .deleteById(request.params.commentId);
+                if(deletedComment) {
+                    return {
+                        message: 'Your comment was successfully deleted.'
+                    }
+                }
             }
             else {
-                return Boom.notFound('Blog post was not found.');
+                return Boom.notFound('Blog post or comment was not found.');
             }
         }
       } catch (err) {

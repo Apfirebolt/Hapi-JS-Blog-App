@@ -12,7 +12,7 @@ class BlogPostModel extends BaseModel {
         relation: BaseModel.HasManyRelation,
         modelClass: Path.join(__dirname, 'Comment'),
         join: {
-          from: 'blog_post.id',
+          from: 'blog_posts.id',
           to: 'comments.blog_post_id',
         },
       },
