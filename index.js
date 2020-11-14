@@ -38,14 +38,8 @@ const init = async () => {
     key: process.env.JWT_SECRET,
     verifyOptions: { algorithms: ['HS256'] },
     async validate(decoded, request) {
-      const fetchedUser = await User.query().withGraphFetched('org').findById(decoded.id);
+      const fetchedUser = await User.query().findById(decoded.id);
       if (fetchedUser) {
-        if (request.params && request.params.orgId) {
-          if (request.params.orgId !== fetchedUser.org.id.toString()) {
-            return { isValid: false };
-          }
-        }
-        request.app.orgId = fetchedUser.org.id;
         request.app.userId = fetchedUser.id;
         return { isValid: true, credentials: fetchedUser };
       }
@@ -53,6 +47,8 @@ const init = async () => {
     },
   });
   server.auth.default('jwt');
+
+  // Auto routes configuration.
   HapiAutoRoutes.bind(server).register({
     pattern: `${__dirname}/routes/**/*.js`,
   });
