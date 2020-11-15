@@ -25,6 +25,14 @@ class UserModel extends BaseModel {
           to: 'blog_category.created_by',
         },
       },
+      polls: {
+        relation: BaseModel.HasManyRelation,
+        modelClass: Path.join(__dirname, 'Poll'),
+        join: {
+          from: 'users.id',
+          to: 'polls.created_by',
+        },
+      },      
     };
   }
 
