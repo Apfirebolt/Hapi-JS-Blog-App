@@ -20,9 +20,10 @@ module.exports = {
             return Boom.notFound('User does not exist.');
         }
         else {
+            // Select the blog category
             const fetchedBlogCategory = await fetchedUser.$relatedQuery('blog_categories')
-                .where('id', request.params.categoryId)
-                .delete();
+                .findById(request.params.categoryId);
+            await fetchedBlogCategory.$relatedQuery('posts').relate([1, 2]);
             return fetchedBlogCategory;
         }
       } catch (err) {

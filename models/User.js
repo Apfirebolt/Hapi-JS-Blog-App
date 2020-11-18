@@ -32,7 +32,15 @@ class UserModel extends BaseModel {
           from: 'users.id',
           to: 'polls.created_by',
         },
-      },      
+      },
+      groups: {
+        relation: BaseModel.HasManyRelation,
+        modelClass: Path.join(__dirname, 'Group'),
+        join: {
+          from: 'users.id',
+          to: 'groups.created_by',
+        },
+      },            
     };
   }
 

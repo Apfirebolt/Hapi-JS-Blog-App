@@ -19,7 +19,10 @@ module.exports = {
             return Boom.notFound('User does not exist.');
         }
         else {
-            return fetchedUser.$relatedQuery('blog_categories');
+          // return fetchedUser.$relatedQuery('blog_categories').where((builder) => {
+          //   builder.where('created_by', request.app.userId).andWhere('id', '>', 1);
+          // });
+          return fetchedUser.$relatedQuery('blog_categories');
         }
       } catch (err) {
         request.log(['error', request.path], err);
